@@ -574,7 +574,7 @@ html {
 /* Light mode deadline chip: not selected = white bg, red text, grey border.
    selected / primary look (if needed) match tab active state (red bg white text) */
 .light-mode .deadline-chip {
-  background: transparent;
+  background: #960000;
   color: #ffffff;
   border: 1px solid #e5e7eb; /* grey border */
 }
