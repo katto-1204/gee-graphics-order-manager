@@ -6,3 +6,649 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Welcome screen: static logo, larger, subtle fade transition when leaving */
+.welcome-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #960000; /* red background per request */
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  -webkit-tap-highlight-color: transparent;
+  color: white;
+
+  /* entrance / fade-in */
+  animation: welcome-fade-in 420ms ease both;
+}
+
+.welcome-screen.fade-out {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+@keyframes welcome-fade-in {
+  from { opacity: 0; transform: scale(1.02); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Logo 2x size (was ~192px), use responsive cap */
+.welcome-logo {
+  width: 384px; /* 2x previous 192px */
+  height: auto;
+  max-width: 80vw;
+  display: block;
+}
+
+/* AUTH / GLASSMORPHISM STYLES */
+.auth-screen {
+  background-color: #960000; /* solid red background */
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---- UPDATED: glass card uses red tint, stronger visible border ---- */
+.glass-card {
+  position: relative;
+  z-index: 10;
+  border-radius: 18px;
+  padding: 1.75rem;
+  /* keep red form color but translucent to preserve glass look */
+  background: linear-gradient(180deg, rgba(150,0,0,0.20), rgba(150,0,0,0.14));
+  /* stronger, thin white border so it's clearly visible on red bg */
+  border: 1px solid rgba(255,255,255,0.36);
+  /* stronger shadow so the form stands out */
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255,255,255,0.02);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  color: white;
+  overflow: hidden;
+}
+
+/* keep the subtle sheen but reduce its contrast on red */
+.glass-card::before {
+  content: "";
+  position: absolute;
+  left: -30%;
+  top: -30%;
+  width: 160%;
+  height: 60%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+  transform: rotate(-18deg);
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: overlay;
+}
+
+/* ---- UPDATED: inputs - visible thin white borders, darker translucent inner bg ---- */
+.glass-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  /* slightly darker translucent fill so inputs read as fields on the red card */
+  background: rgba(0,0,0,0.18);
+  /* clearer white border */
+  border: 1px solid rgba(255,255,255,0.36);
+  color: white;
+  outline: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.12s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.glass-input::placeholder { color: rgba(255,255,255,0.75); }
+.glass-input:focus {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.60);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 4px rgba(255,255,255,0.06);
+}
+
+/* ---- UPDATED: CTA - white background, red text ---- */
+.glass-cta {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  /* white button with red text per request */
+  background: #ffffff;
+  color: #960000;
+  font-weight: 700;
+  border: 1px solid rgba(150,0,0,0.14);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+.glass-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 46px rgba(0,0,0,0.35);
+  opacity: 0.98;
+}
+
+/* ensure text inside the card remains white except CTA which is red text on white */
+.auth-screen .glass-card h2,
+.auth-screen .glass-card p,
+.auth-screen .glass-card input {
+  color: white;
+}
+
+/* ensure auth text remains white (buttons excluded so CTA can be red) */
+.auth-screen .glass-card,
+.auth-screen .glass-card h2,
+.auth-screen .glass-card p,
+.auth-screen .glass-card input {
+  color: white;
+}
+
+/* CTA/button: white background with red text */
+.auth-screen .glass-card button,
+.glass-cta {
+  color: #960000;
+}
+
+/* Make the auth "Sign Up / Login" underline pure white and more visible */
+.auth-screen .glass-card p .underline {
+  color: #ffffff !important;
+  text-decoration-color: #ffffff !important;
+  text-underline-offset: 3px;
+  font-weight: 700;
+}
+
+/* animated background blobs (already present) */
+.auth-blob {
+  position: absolute;
+  filter: blur(42px);
+  opacity: 0.45;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* positions and colors (kept as-is) */
+.auth-blob--one {
+  width: 420px;
+  height: 420px;
+  right: -120px;
+  top: -80px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,200,200,0.18), rgba(150,0,0,0.08) 40%, transparent 60%);
+  animation: blob-move-one 8s ease-in-out infinite;
+}
+.auth-blob--two {
+  width: 360px;
+  height: 360px;
+  left: -140px;
+  bottom: -100px;
+  background: radial-gradient(circle at 40% 60%, rgba(255,150,150,0.14), rgba(150,0,0,0.06) 45%, transparent 65%);
+  animation: blob-move-two 10s ease-in-out infinite;
+}
+.auth-blob--three {
+  width: 260px;
+  height: 260px;
+  left: 30%;
+  top: 10%;
+  background: radial-gradient(circle at 50% 50%, rgba(255,170,170,0.12), rgba(150,0,0,0.05) 50%, transparent 75%);
+  animation: blob-move-three 12s ease-in-out infinite;
+}
+
+/* subtle blob animations */
+@keyframes blob-move-one {
+  0% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(-20px,18px) scale(1.06); }
+  100% { transform: translate(0,0) scale(1); }
+}
+@keyframes blob-move-two {
+  0% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(18px,-14px) scale(0.96); }
+  100% { transform: translate(0,0) scale(1); }
+}
+@keyframes blob-move-three {
+  0% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(-12px,-10px) scale(1.04); }
+  100% { transform: translate(0,0) scale(1); }
+}
+
+/* DAY mode: every text black, buttons red with white text */
+.light-mode {
+  background: linear-gradient(180deg, #ffffff, #f8f8f8);
+  color: #000000; /* ALL text black by default in day mode */
+}
+.light-mode .muted { color: #4b5563; } /* secondary text dark grey */
+
+/* Buttons: primary red with white text */
+.btn-red {
+  background: #960000;
+  color: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(150,0,0,0.12);
+}
+.btn-red:hover { filter: brightness(1.03); transform: translateY(-2px); }
+
+/* Cancel / Remove / Back style: white bg, black text */
+.btn-cancel {
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-cancel:hover { background:#f3f3f3; }
+
+/* Dark mode: keep white text; order form backgrounds red */
+.dark-mode {
+  background: linear-gradient(180deg, #3a0000, #250000);
+  color: #ffffff;
+}
+
+/* Make order / form backgrounds red in dark mode */
+.dark-mode .glass-card,
+.dark-mode .modal-red,
+.dark-mode .modal .glass-card {
+  background: rgba(150,0,0,0.18) !important;
+  border: 1px solid rgba(0,0,0,0.55) !important;
+}
+
+/* STATUS modal: checkbox spacing */
+.modal input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+/* PRICING GRID */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.pricing-card {
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.pricing-card--dark { border: 1px solid rgba(255,255,255,0.10); }
+.pricing-media {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+}
+.pricing-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.pricing-placeholder {
+  width: 100%;
+  height: 100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,0,0,0.06);
+  color: #6b7280;
+}
+.pricing-gradient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.pricing-card--light .pricing-gradient {
+  background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(0,0,0,0));
+}
+.pricing-card--dark .pricing-gradient {
+  background: linear-gradient(180deg, rgba(0,0,0,0.3), rgba(0,0,0,0));
+}
+.pricing-top {
+  position: absolute;
+  inset: 0;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  padding: 10px;
+  color: #fff;
+  mix-blend-mode: normal;
+}
+.pricing-top-left { font-weight: 700; font-size: 14px; color: #fff; }
+.pricing-top-right { margin-left:auto; font-weight:700; color: #fff; }
+
+/* pricing body */
+.pricing-body { padding: 12px; background: transparent; display:flex; flex-direction:column; gap:8px; }
+.pricing-input { width: 110px; padding: 6px 8px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); }
+.pricing-input--dark { background: rgba(255,255,255,0.04); color: #fff; border:1px solid rgba(255,255,255,0.12); }
+
+/* upload button */
+.file-upload-label .upload-btn {
+  display:inline-block;
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor:pointer;
+}
+.dark-mode .file-upload-label .upload-btn { border: 1px solid rgba(255,255,255,0.12); }
+
+/* responsive: collapse to 2 cols on small screens */
+@media (max-width: 1024px) {
+  .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .pricing-grid { grid-template-columns: 1fr; }
+  .header-logo { height: 80px; }
+}
+
+/* remove bottom-right logout button references if any */
+.fixed.bottom-4.right-4 { display: none !important; }
+
+/* Header logo size (match pricing chip height) */
+.header-logo {
+  height: 80px;
+  width: auto;
+}
+
+/* Base chip style for all chips */
+.chip {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pricing chip specific */
+.pricing-chip {
+  background: #960000;
+  color: white;
+  border: 1px solid rgba(150,0,0,0.12);
+}
+.dark-mode .pricing-chip {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* Tab chips styling */
+.tabs-row {
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 1rem 0;
+}
+
+.tab-chip {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Light mode tab chips */
+.light-mode .tab-chip {
+  background: #ffffff;
+  color: #960000;
+  border: 1px solid #e5e7eb; /* grey border */
+  font-weight: 500;
+}
+
+/* Active tab in light mode */
+.light-mode .tab-chip--active {
+  background: #960000;
+  color: #ffffff;
+  border: 1px solid #7a0000; /* darker red border */
+  box-shadow: 0 4px 12px rgba(150,0,0,0.15);
+}
+
+/* Hover state for light mode tabs */
+.light-mode .tab-chip:hover:not(.tab-chip--active) {
+  border-color: #960000;
+  background: rgba(150,0,0,0.02);
+}
+
+/* Dark mode tab chips */
+.dark-mode .tab-chip {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* Active tab state */
+.tab-chip--active {
+  background: #960000 !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(150,0,0,0.15);
+  transform: translateY(-1px);
+}
+
+/* Hover effects */
+.chip:hover,
+.tab-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Add-new card styles */
+.add-card {
+  border: 2px dashed rgba(150,0,0,0.3); /* Default broken line border - dark red but translucent */
+  background: rgba(255,255,255,0.98);
+  transition: all 0.2s ease;
+}
+
+/* Light mode specific */
+.add-card--day {
+  background: #ffffff;
+  border: 2px dashed rgba(150,0,0,0.4); /* dark red dashed border */
+}
+.add-card--day:hover {
+  border-color: rgba(150,0,0,0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(150,0,0,0.08);
+}
+
+/* Dark mode specific */
+.add-card--dark {
+  background: #960000; /* red fill */
+  border: 2px dashed rgba(255,255,255,0.4); /* white dashed border */
+}
+.add-card--dark:hover {
+  border-color: rgba(255,255,255,0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* Plus icon colors */
+.add-card--dark .w-12 { color: #ffffff !important; } /* Force white plus sign in dark mode */
+.add-card--day .w-12 { color: #960000 !important; } /* Force red plus sign in light mode */
+
+/* Form background in dark mode - solid dark red */
+.dark-mode .glass-card,
+.dark-mode .modal-red,
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea {
+  background: #680000 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 235, 235, 0.578) !important;
+}
+
+/* Modal background and form styling */
+.modal {
+  background: #4c00fc !important;
+}
+.modal .glass-card,
+.modal-content,
+.dark-mode .modal-content {
+  background: #050015 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+/* Form inputs in modal */
+.modal input,
+.modal select,
+.modal textarea {
+  background: #0a0a0a !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.2) !important;
+  border-radius: 8px;
+}
+
+/* Input placeholders */
+.modal input::placeholder,
+.modal textarea::placeholder {
+  color: rgba(255,255,255,0.6) !important;
+}
+
+/* Modal buttons */
+.modal .btn-red {
+  background: #ffffff !important;
+  color: #960000 !important;
+  border: 2px solid #960000 !important;
+}
+
+.modal .btn-cancel {
+  background: transparent !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,0.3) !important;
+}
+
+/* Modal text colors */
+.modal h2,
+.modal h3,
+.modal h4,
+.modal p,
+.modal label,
+.modal span {
+  color: #ffffff !important;
+}
+
+/* Upload area in modal */
+.modal .border-dashed {
+  border: 2px dashed rgba(255,255,255,0.2) !important;
+  background: rgba(255,255,255,0.02) !important;
+}
+
+/* Close button */
+.modal .hover\:scale-110 {
+  color: #ffffff !important;
+}
+
+/* Size chips in modal */
+.modal .rounded-full {
+  background: #960000 !important;
+  color: #ffffff !important;
+}
+
+/* Team card border colors match add-card broken line color in light mode,
+   grey border in dark mode */
+.team-card {
+  border-width: 2px;
+  border-style: solid;
+  border-color: rgba(150,0,0,0.4); /* light-mode default */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+.dark-mode .team-card {
+  border-color: rgba(156,163,175,0.28); /* grey border in dark mode */
+}
+
+/* Deadline chip: use same look as tab/pricing chips */
+.deadline-chip {
+  padding: 6px 10px;
+  border-radius: 999px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.4px;
+}
+
+/* Light mode deadline chip: not selected = white bg, red text, grey border.
+   selected / primary look (if needed) match tab active state (red bg white text) */
+.light-mode .deadline-chip {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid #e5e7eb; /* grey border */
+}
+
+/* If you want a "primary" variant for deadline, reuse active tab class:
+   .deadline-chip--active { background:#960000; color:#fff; border:1px solid #7a0000 } */
+
+/* Dark mode deadline chip: transparent bg, white text, white-ish border (match tab chips) */
+.dark-mode .deadline-chip {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* ensure chip size matches pricing chip */
+.chip, .deadline-chip, .pricing-chip {
+  height: 32px;
+  line-height: 32px;
+  padding: 6px 12px;
+}
+
+/* adjust team card inner text for readability on colored backgrounds */
+.team-card .text-white { color: #ffffff; }
+
+/* small responsive tweak so chips don't overflow on tiny screens */
+@media (max-width: 480px) {
+  .deadline-chip { font-size: 0.75rem; padding: 6px 8px; min-width: 60px; }
+  .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Logout modal styling */
+.logout-modal {
+  width: 300px;  /* smaller width */
+  height: 120px; /* reduced height for rectangular shape */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* center content vertically */
+  gap: 15px; /* reduced spacing between elements */
+  background: #2e0000 !important; /* dark gray/black shade */
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Modal text */
+.logout-modal h3 {
+  font-size: 1rem;
+  margin-bottom: 10px; /* reduced bottom margin */
+  color: #ffffff;
+}
+
+/* Button container */
+.logout-modal .w-full {
+  display: flex;
+  gap: 10px; /* reduced gap between buttons */
+  justify-content: center;
+}
+
+/* Equal width buttons */
+.logout-modal .logout-btn-equal {
+  flex: 1;
+  max-width: 100px; /* limit button width */
+  padding: 8px 0;
+  font-size: 0.9rem;
+}
+
+.logout-modal .btn-red {
+  background: #c10000 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+/* No button */
+.logout-modal .btn-cancel {
+  background: transparent !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+}
