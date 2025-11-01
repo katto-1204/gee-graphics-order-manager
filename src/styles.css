@@ -614,7 +614,7 @@ html {
   flex-direction: column;
   justify-content: center; /* center content vertically */
   gap: 15px; /* reduced spacing between elements */
-  background: #2e0000 !important; /* dark gray/black shade */
+  background: #300000 !important; /* dark gray/black shade */
   border: 1px solid rgba(255,255,255,0.1);
 }
 
