@@ -1,9 +1,4 @@
 # Gee Graphics – Order Management System
-
-[Gee Graphics Logo: data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjg3OSIgem9vbUFuZFBhbj0ibWFnbmlmeSIgdmlld0JveD0iMCAwIDIxNTkuMjUgMTQwMy45OTk5MzYiIGhlaWdodD0iMTg3MiIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQgbWVldCIgdmVyc2...==]
-
-Modern. Minimalist. Powerful.
-
 ------------------------------------------------------------
 
 ## Overview
@@ -51,8 +46,7 @@ Deployment: Vercel / Netlify / Firebase Hosting
 ## Project Structure
 
 src/
-├── components/
-│   └── GeeGraphicsSystem.jsx     # Main dashboard
+├── GeeGraphicsSystem.jsx     # Main dashboard
 ├── firebase.js                   # Firebase config
 ├── App.js
 ├── index.js
@@ -255,11 +249,7 @@ Icons: Lucide
 Backend: Firebase
 Built with React 18 and Tailwind CSS
 
-------------------------------------------------------------
 
-GEE GRAPHICS – From Order to Delivery, Beautifully Managed.
-
-------------------------------------------------------------
 
 Live Demo: https://gee-graphics.vercel.app (coming soon)
 GitHub: https://github.com/yourusername/gee-graphics
