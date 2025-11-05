@@ -879,19 +879,39 @@ const GeeGraphicsSystem = () => {
 
         {/* Sizing Tab */}
         {activeTab === "Sizing" && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredOrders.map((order) => (
               <button
                 key={order.id}
-                onClick={() => openModal("sizing", order)}
-                className={`p-6 rounded-xl border-2 text-left transition hover:scale-105 hover:shadow-lg ${
+                onClick={() => openModal("size-list", order)}
+                className={`p-6 rounded-xl border-2 text-left transition hover:shadow-lg ${
                   darkMode
                     ? "bg-gray-800 border-gray-700"
                     : "bg-white border-gray-200"
                 }`}
               >
-                <h3 className="text-xl font-bold">{order.teamName}</h3>
-                <p className="text-sm mt-2 opacity-60">Click to manage sizes</p>
+                <h3 className="text-xl font-bold mb-4">{order.teamName}</h3>
+                
+                <div className="mb-4">
+                  <span className="text-sm font-medium">Size Range:</span>
+                  <span className="ml-2 px-3 py-1 rounded-full text-sm font-semibold bg-red-600 text-white">
+                    {getSizeRange(order.sizes)}
+                  </span>
+                </div>
+
+                <div className="text-sm opacity-70 mb-4">
+                  Click to view/edit size list
+                </div>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    advanceOrder(order, "printing");
+                  }}
+                  className="w-full py-2 rounded-lg font-semibold btn-red"
+                >
+                  Move to Printing
+                </button>
               </button>
             ))}
           </div>
@@ -1108,34 +1128,27 @@ const GeeGraphicsSystem = () => {
                     </datalist>
 
                     {/* Sizes */}
-                    <div>
-                      <h4 className="font-semibold mb-2">Sizes:</h4>
-                      <div className="grid grid-cols-4 gap-2">
-                        {Object.keys(formData.sizes).map((sz) => (
-                          <div key={sz}>
-                            <label className="text-sm block mb-1">{sz}</label>
-                            <input
-                              type="number"
-                              min="0"
-                              value={formData.sizes[sz]}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  sizes: {
-                                    ...formData.sizes,
-                                    [sz]: parseInt(e.target.value) || 0,
-                                  },
-                                })
-                              }
-                              className={`w-full px-2 py-1 rounded transition focus:outline-none focus:ring-1 ${
-                                darkMode
-                                  ? "bg-gray-700 text-white"
-                                  : "bg-gray-100 text-black"
-                              }`}
-                            />
-                          </div>
-                        ))}
-                      </div>
+                    <div className="space-y-2">
+                      <label className="block font-medium">Team Sizes</label>
+                      <textarea
+                        placeholder="Format: Name - Size&#10;Example: Juan De la Cruz - M&#10;Separate entries with commas or new lines"
+                        value={formData.sizingNotes || ''}
+                        onChange={(e) => {
+                          const text = e.target.value;
+                          setFormData({
+                            ...formData,
+                            sizingNotes: text,
+                            sizes: parseSizeList(text),
+                            quantity: text.split(',').filter(x => x.trim()).length
+                          });
+                        }}
+                        className={`w-full px-4 py-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                          darkMode
+                            ? "bg-gray-700 text-white"
+                            : "bg-gray-100 text-black"
+                        }`}
+                        rows={4}
+                      />
                     </div>
 
                     <input
@@ -1632,6 +1645,40 @@ const GeeGraphicsSystem = () => {
       )}
     </div>
   );
+};
+
+// Add this helper function at the top level
+const parseSizeList = (text) => {
+  const sizes = {};
+  // Initialize all size counts
+  ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'].forEach(size => sizes[size] = 0);
+  
+  // Parse the text input
+  const entries = text.split(',').map(entry => entry.trim());
+  
+  entries.forEach(entry => {
+    const parts = entry.split('-').map(p => p.trim());
+    const size = parts[1]?.toUpperCase();
+    if (size && sizes.hasOwnProperty(size)) {
+      sizes[size]++;
+    }
+  });
+  
+  return sizes;
+};
+
+const getSizeRange = (sizes) => {
+  const availableSizes = Object.entries(sizes)
+    .filter(([_, count]) => count > 0)
+    .map(([size]) => size);
+  
+  if (availableSizes.length === 0) return '';
+  
+  const orderedSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
+  const min = orderedSizes.find(size => availableSizes.includes(size));
+  const max = [...orderedSizes].reverse().find(size => availableSizes.includes(size));
+  
+  return `${min}-${max}`;
 };
 
 export default GeeGraphicsSystem;
