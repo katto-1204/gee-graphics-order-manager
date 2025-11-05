@@ -883,7 +883,7 @@ const GeeGraphicsSystem = () => {
             {filteredOrders.map((order) => (
               <button
                 key={order.id}
-                onClick={() => openModal("size-list", order)}
+                onClick={() => openModal("sizing", order)}
                 className={`p-6 rounded-xl border-2 text-left transition hover:shadow-lg ${
                   darkMode
                     ? "bg-gray-800 border-gray-700"
@@ -1135,11 +1135,12 @@ const GeeGraphicsSystem = () => {
                         value={formData.sizingNotes || ''}
                         onChange={(e) => {
                           const text = e.target.value;
+                          const entries = text.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
                           setFormData({
                             ...formData,
                             sizingNotes: text,
                             sizes: parseSizeList(text),
-                            quantity: text.split(',').filter(x => x.trim()).length
+                            quantity: entries.length
                           });
                         }}
                         className={`w-full px-4 py-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-red-500 ${
@@ -1205,22 +1206,17 @@ const GeeGraphicsSystem = () => {
                       </p>
                       <div>
                         <strong>Sizes:</strong>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {Object.entries(selectedTeam.sizes).map(
-                            ([sz, qty]) =>
-                              qty > 0 && (
-                                <span
-                                  key={sz}
-                                  className="px-3 py-1 rounded-full text-sm font-semibold"
-                                  style={{
-                                    backgroundColor: "#960000",
-                                    color: "white",
-                                  }}
-                                >
-                                  {sz}: {qty}
-                                </span>
-                              )
-                          )}
+                        <div className="mt-2">
+                          <button
+                            onClick={() => openModal("size-list", selectedTeam)}
+                            className="px-3 py-1 rounded-full text-sm font-semibold"
+                            style={{
+                              backgroundColor: "#960000",
+                              color: "white",
+                            }}
+                          >
+                            {getSizeRange(selectedTeam.sizes) || "No sizes"} (view list)
+                          </button>
                         </div>
                       </div>
                       <p className="text-sm opacity-60">
@@ -1365,6 +1361,44 @@ const GeeGraphicsSystem = () => {
               </>
             )}
 
+            {/* INSERT: SIZE-LIST VIEW MODAL */}
+            {modalType === "size-list" && selectedTeam && (
+              <>
+                <div className="flex justify-between items-start mb-6">
+                  <h2 className="text-2xl font-bold">{selectedTeam.teamName} - Sizes</h2>
+                  <button onClick={closeModal} className="hover:scale-110 transition" aria-label="Close size list">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <div className="mb-4">
+                  <h3 className="font-semibold mb-2">Size Range</h3>
+                  <div className="mb-4">
+                    <span className="ml-2 px-3 py-1 rounded-full text-sm font-semibold bg-red-600 text-white">
+                      {getSizeRange(selectedTeam.sizes) || "No sizes"}
+                    </span>
+                  </div>
+
+                  <h3 className="font-semibold mb-2">Player list</h3>
+                  <textarea
+                    readOnly
+                    value={selectedTeam.sizingNotes || ""}
+                    rows={8}
+                    className={`w-full px-4 py-3 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                      darkMode ? "bg-gray-700 text-white" : "bg-gray-100 text-black"
+                    }`}
+                  />
+                </div>
+
+                <div className="flex justify-end">
+                  <button onClick={closeModal} className="px-6 py-2 rounded-lg font-semibold btn-cancel">
+                    Close
+                  </button>
+                </div>
+              </>
+            )}
+            {/* END INSERT */}
+
             {/* SIZING MODAL */}
             {modalType === "sizing" && selectedTeam && (
               <>
@@ -1425,9 +1459,13 @@ const GeeGraphicsSystem = () => {
                 <div className="flex gap-3">
                   <button
                     onClick={() => {
+                      const text = formData.sizingNotes ?? selectedTeam.sizingNotes ?? "";
+                      const entries = text.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
                       updateOrder({
                         ...selectedTeam,
-                        sizingNotes: formData.sizingNotes,
+                        sizingNotes: text,
+                        sizes: parseSizeList(text),
+                        quantity: entries.length
                       });
                       closeModal();
                     }}
@@ -1437,9 +1475,13 @@ const GeeGraphicsSystem = () => {
                   </button>
                   <button
                     onClick={() => {
+                      const text = formData.sizingNotes ?? selectedTeam.sizingNotes ?? "";
+                      const entries = text.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
                       updateOrder({
                         ...selectedTeam,
-                        sizingNotes: formData.sizingNotes,
+                        sizingNotes: text,
+                        sizes: parseSizeList(text),
+                        quantity: entries.length,
                         status: "printing",
                       });
                       closeModal();
@@ -1493,22 +1535,17 @@ const GeeGraphicsSystem = () => {
                   </p>
                   <div>
                     <strong>Sizes:</strong>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {Object.entries(selectedTeam.sizes).map(
-                        ([sz, qty]) =>
-                          qty > 0 && (
-                            <span
-                              key={sz}
-                              className="px-3 py-1 rounded-full text-sm font-semibold"
-                              style={{
-                                backgroundColor: "#960000",
-                                color: "white",
-                              }}
-                            >
-                              {sz}: {qty}
-                            </span>
-                          )
-                      )}
+                    <div className="mt-2">
+                      <button
+                        onClick={() => openModal("size-list", selectedTeam)}
+                        className="px-3 py-1 rounded-full text-sm font-semibold"
+                        style={{
+                          backgroundColor: "#960000",
+                          color: "white",
+                        }}
+                      >
+                        {getSizeRange(selectedTeam.sizes) || "No sizes"} (view list)
+                      </button>
                     </div>
                   </div>
                   {selectedTeam.sizingNotes && (
@@ -1653,8 +1690,8 @@ const parseSizeList = (text) => {
   // Initialize all size counts
   ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'].forEach(size => sizes[size] = 0);
   
-  // Parse the text input
-  const entries = text.split(',').map(entry => entry.trim());
+  // Parse the text input — accept commas OR new lines (shift+enter)
+  const entries = (text || "").split(/[\r\n,]+/).map(entry => entry.trim()).filter(Boolean);
   
   entries.forEach(entry => {
     const parts = entry.split('-').map(p => p.trim());
