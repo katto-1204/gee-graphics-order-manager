@@ -1065,7 +1065,8 @@ const GeeGraphicsSystem = () => {
                       </div>
                     ) : null}
 
-                    <select
+                    <input
+                      list="shirtStyles"
                       value={formData.style}
                       onChange={(e) =>
                         setFormData({ ...formData, style: e.target.value })
@@ -1075,16 +1076,18 @@ const GeeGraphicsSystem = () => {
                           ? "bg-gray-700 border-gray-600 text-white"
                           : "bg-gray-100 border-gray-300 text-black"
                       }`}
-                    >
-                      <option value="">Select Style</option>
+                      placeholder="Enter or select style"
+                    />
+                    <datalist id="shirtStyles">
                       {shirtStyles.map((s) => (
                         <option key={s} value={s}>
                           {s}
                         </option>
                       ))}
-                    </select>
+                    </datalist>
 
-                    <select
+                    <input
+                      list="fabricTypes"
                       value={formData.fabric}
                       onChange={(e) =>
                         setFormData({ ...formData, fabric: e.target.value })
@@ -1094,14 +1097,15 @@ const GeeGraphicsSystem = () => {
                           ? "bg-gray-700 border-gray-600 text-white"
                           : "bg-gray-100 border-gray-300 text-black"
                       }`}
-                    >
-                      <option value="">Select Fabric</option>
+                      placeholder="Enter or select fabric"
+                    />
+                    <datalist id="fabricTypes">
                       {fabrics.map((f) => (
                         <option key={f} value={f}>
                           {f}
                         </option>
                       ))}
-                    </select>
+                    </datalist>
 
                     {/* Sizes */}
                     <div>
