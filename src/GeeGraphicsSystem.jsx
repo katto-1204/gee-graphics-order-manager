@@ -16,6 +16,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from "firebase/auth";
 import {
   collection,
@@ -314,6 +315,19 @@ const GeeGraphicsSystem = () => {
       alert(error.message);
     }
   };
+
+  // Keep user signed in across page refreshes using Firebase auth listener
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user.uid);
+        setCurrentScreen("main");
+      } else {
+        setCurrentUser(null);
+      }
+    });
+    return () => unsub();
+  }, []);
 
   /* --------------------------------------------------------------
      FIRESTORE DATA SYNC
