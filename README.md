@@ -13,7 +13,7 @@ Built with React + Firebase, it supports:
 - CRUD operations
 - Responsive design
 
-------------------------------------------------------------
+-----------------------------------------------------------
 
 ## Features
 
